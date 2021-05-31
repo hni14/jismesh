@@ -594,7 +594,7 @@ def to_meshpoint(meshcode, lat_multiplier, lon_multiplier):
     lat += ((k//3 == 1) * _unit_lat_lv10()) * targets
     lon += ((k%2 == 0) * _unit_lon_lv10()) * targets
 
-    # メッシュ内産業
+    # メッシュ内座標
     lat +=  unit_lat(level)*lat_multiplier
     lon +=  unit_lon(level)*lon_multiplier
 
