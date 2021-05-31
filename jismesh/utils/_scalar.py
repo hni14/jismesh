@@ -67,6 +67,8 @@ _dict_unit_lat_lon = {
     10 : (_unit_lat_lv10, _unit_lon_lv10)
 }
 
+_nonstandard_levels = [7, 8, 9, 10]
+
 def unit_lat(level):
     return _dict_unit_lat_lon[level][0]()
 
@@ -1059,3 +1061,6 @@ def to_intersects(meshcode, to_level):
     from_lat_n, from_lon_e = to_meshpoint(meshcode, 1, 1)
 
     return _make_envelope(from_lat_s, from_lon_w, from_lat_n, from_lon_e, to_level, type(meshcode))
+
+def is_nonstandard(level):
+    return level in _nonstandard_levels

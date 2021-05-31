@@ -54,6 +54,7 @@ _unit_lat_lv10 = _functools.lru_cache(1)(lambda: _unit_lat_lv9()/2)
 _unit_lon_lv10 = _functools.lru_cache(1)(lambda: _unit_lon_lv9()/2)
 
 _supported_levels = [1, 40000, 20000, 16000, 2, 8000, 5000, 4000, 2500, 2000, 3, 4, 5, 6, 7, 8, 9, 10]
+_nonstandard_levels = [7, 8, 9, 10]
 
 def unit_lat(level):
     level = _np.atleast_1d(level).astype(_np.int64)
@@ -598,3 +599,6 @@ def to_meshpoint(meshcode, lat_multiplier, lon_multiplier):
     lon +=  unit_lon(level)*lon_multiplier
 
     return lat, lon
+
+def is_nonstandard(level):
+    return _np.any(_np.isin(level, _nonstandard_levels))
