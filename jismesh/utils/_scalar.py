@@ -37,6 +37,14 @@ _unit_lat_lv5 = _functools.lru_cache(1)(lambda: _unit_lat_lv4()/2)
 _unit_lon_lv5 = _functools.lru_cache(1)(lambda: _unit_lon_lv4()/2)
 _unit_lat_lv6 = _functools.lru_cache(1)(lambda: _unit_lat_lv5()/2)
 _unit_lon_lv6 = _functools.lru_cache(1)(lambda: _unit_lon_lv5()/2)
+_unit_lat_lv7 = _functools.lru_cache(1)(lambda: _unit_lat_lv6()/2)
+_unit_lon_lv7 = _functools.lru_cache(1)(lambda: _unit_lon_lv6()/2)
+_unit_lat_lv8 = _functools.lru_cache(1)(lambda: _unit_lat_lv7()/2)
+_unit_lon_lv8 = _functools.lru_cache(1)(lambda: _unit_lon_lv7()/2)
+_unit_lat_lv9 = _functools.lru_cache(1)(lambda: _unit_lat_lv8()/2)
+_unit_lon_lv9 = _functools.lru_cache(1)(lambda: _unit_lon_lv8()/2)
+_unit_lat_lv10 = _functools.lru_cache(1)(lambda: _unit_lat_lv9()/2)
+_unit_lon_lv10 = _functools.lru_cache(1)(lambda: _unit_lon_lv9()/2)
 
 _dict_unit_lat_lon = {
     1 : (_unit_lat_lv1, _unit_lon_lv1),
@@ -52,8 +60,14 @@ _dict_unit_lat_lon = {
     3 : (_unit_lat_lv3, _unit_lon_lv3),
     4 : (_unit_lat_lv4, _unit_lon_lv4),
     5 : (_unit_lat_lv5, _unit_lon_lv5),
-    6 : (_unit_lat_lv6, _unit_lon_lv6)
+    6 : (_unit_lat_lv6, _unit_lon_lv6),
+    7 : (_unit_lat_lv7, _unit_lon_lv7),
+    8 : (_unit_lat_lv8, _unit_lon_lv8),
+    9 : (_unit_lat_lv9, _unit_lon_lv9),
+    10 : (_unit_lat_lv10, _unit_lon_lv10)
 }
+
+_nonstandard_levels = [7, 8, 9, 10]
 
 def unit_lat(level):
     return _dict_unit_lat_lon[level][0]()
@@ -82,6 +96,10 @@ def to_meshcode(lat, lon, level, astype):
                 4次(500m四方):4
                 5次(250m四方):5
                 6次(125m四方):6
+                7次(62.5m四方):7
+                8次(31.25m四方):8
+                9次(15.625m四方):9
+                10次(7.8125四方):10
     Return:
         指定次の地域メッシュコード
 
@@ -124,6 +142,14 @@ def to_meshcode(lat, lon, level, astype):
     rem_lon_lv5 = lambda lon: rem_lon_lv4(lon) % _unit_lon_lv5()
     rem_lat_lv6 = lambda lat: rem_lat_lv5(lat) % _unit_lat_lv6()
     rem_lon_lv6 = lambda lon: rem_lon_lv5(lon) % _unit_lon_lv6()
+    rem_lat_lv7 = lambda lat: rem_lat_lv6(lat) % _unit_lat_lv7()
+    rem_lon_lv7 = lambda lon: rem_lon_lv6(lon) % _unit_lon_lv7()
+    rem_lat_lv8 = lambda lat: rem_lat_lv7(lat) % _unit_lat_lv8()
+    rem_lon_lv8 = lambda lon: rem_lon_lv7(lon) % _unit_lon_lv8()
+    rem_lat_lv9 = lambda lat: rem_lat_lv8(lat) % _unit_lat_lv9()
+    rem_lon_lv9 = lambda lon: rem_lon_lv8(lon) % _unit_lon_lv9()
+    rem_lat_lv10 = lambda lat: rem_lat_lv9(lat) % _unit_lat_lv10()
+    rem_lon_lv10 = lambda lon: rem_lon_lv9(lon) % _unit_lon_lv10()
 
     def meshcode_lv1(lat, lon):
         ab = int(rem_lat_lv0(lat) / _unit_lat_lv1())
@@ -193,6 +219,22 @@ def to_meshcode(lat, lon, level, astype):
         k = int(rem_lat_lv5(lat) / _unit_lat_lv6())*2 + int(rem_lon_lv5(lon) / _unit_lon_lv6()) + 1
         return meshcode_lv5(lat, lon) + str(k)
 
+    def meshcode_lv7(lat, lon):
+        k = int(rem_lat_lv6(lat) / _unit_lat_lv7())*2 + int(rem_lon_lv6(lon) / _unit_lon_lv7()) + 1
+        return meshcode_lv6(lat, lon) + str(k)
+
+    def meshcode_lv8(lat, lon):
+        k = int(rem_lat_lv7(lat) / _unit_lat_lv8())*2 + int(rem_lon_lv7(lon) / _unit_lon_lv8()) + 1
+        return meshcode_lv7(lat, lon) + str(k)
+
+    def meshcode_lv9(lat, lon):
+        k = int(rem_lat_lv8(lat) / _unit_lat_lv9())*2 + int(rem_lon_lv8(lon) / _unit_lon_lv9()) + 1
+        return meshcode_lv8(lat, lon) + str(k)
+
+    def meshcode_lv10(lat, lon):
+        k = int(rem_lat_lv9(lat) / _unit_lat_lv10())*2 + int(rem_lon_lv9(lon) / _unit_lon_lv10()) + 1
+        return meshcode_lv9(lat, lon) + str(k)
+
     if level == 1:
         return astype(meshcode_lv1(lat, lon))
 
@@ -235,6 +277,18 @@ def to_meshcode(lat, lon, level, astype):
     if level == 6:
         return astype(meshcode_lv6(lat, lon))
 
+    if level == 7:
+        return astype(meshcode_lv7(lat, lon))
+
+    if level == 8:
+        return astype(meshcode_lv8(lat, lon))
+
+    if level == 9:
+        return astype(meshcode_lv9(lat, lon))
+
+    if level == 10:
+        return astype(meshcode_lv10(lat, lon))
+
     raise ValueError("the level is unsupported.")
 
 def to_meshlevel(meshcode):
@@ -258,6 +312,10 @@ def to_meshlevel(meshcode):
                 4次(500m四方):4
                 5次(250m四方):5
                 6次(125m四方):6
+                7次(62.5m四方):7
+                8次(31.25m四方):8
+                9次(15.625m四方):9
+                10次(7.8125四方):10
     """
     meshcode = str(meshcode)
     length = len(meshcode)
@@ -307,6 +365,22 @@ def to_meshlevel(meshcode):
         if meshcode[10:11] in ['1','2','3','4']:
             return 6
 
+    if length == 12:
+        if meshcode[11:12] in ['1','2','3','4']:
+            return 7
+
+    if length == 13:
+        if meshcode[12:13] in ['1','2','3','4']:
+            return 8
+
+    if length == 14:
+        if meshcode[13:14] in ['1','2','3','4']:
+            return 9
+
+    if length == 15:
+        if meshcode[14:15] in ['1','2','3','4']:
+            return 10
+
     return -1
 
 def to_meshpoint(meshcode, lat_multiplier, lon_multiplier):
@@ -326,6 +400,10 @@ def to_meshpoint(meshcode, lat_multiplier, lon_multiplier):
                 4次(500m四方):4
                 5次(250m四方):5
                 6次(125m四方):6
+                7次(62.5m四方):7
+                8次(31.25m四方):8
+                9次(15.625m四方):9
+                10次(7.8125四方):10
 
     Args:
         meshcode: 指定次の地域メッシュコード
@@ -428,6 +506,31 @@ def to_meshpoint(meshcode, lat_multiplier, lon_multiplier):
 
     lon_multiplier_lv6 = _functools.partial(
         lambda meshcode: int(bin(int(meshcode[10:11])-1)[2:].zfill(2)[1:2]), meshcode=meshcode)
+
+    lat_multiplier_lv7 = _functools.partial(
+        lambda meshcode: int(bin(int(meshcode[11:12])-1)[2:].zfill(2)[0:1]), meshcode=meshcode)
+
+    lon_multiplier_lv7 = _functools.partial(
+        lambda meshcode: int(bin(int(meshcode[11:12])-1)[2:].zfill(2)[1:2]), meshcode=meshcode)
+
+    lat_multiplier_lv8 = _functools.partial(
+        lambda meshcode: int(bin(int(meshcode[12:13])-1)[2:].zfill(2)[0:1]), meshcode=meshcode)
+
+    lon_multiplier_lv8 = _functools.partial(
+        lambda meshcode: int(bin(int(meshcode[12:13])-1)[2:].zfill(2)[1:2]), meshcode=meshcode)
+
+    lat_multiplier_lv9 = _functools.partial(
+        lambda meshcode: int(bin(int(meshcode[13:14])-1)[2:].zfill(2)[0:1]), meshcode=meshcode)
+
+    lon_multiplier_lv9 = _functools.partial(
+        lambda meshcode: int(bin(int(meshcode[13:14])-1)[2:].zfill(2)[1:2]), meshcode=meshcode)
+
+    lat_multiplier_lv10 = _functools.partial(
+        lambda meshcode: int(bin(int(meshcode[14:15])-1)[2:].zfill(2)[0:1]), meshcode=meshcode)
+
+    lon_multiplier_lv10 = _functools.partial(
+        lambda meshcode: int(bin(int(meshcode[14:15])-1)[2:].zfill(2)[1:2]), meshcode=meshcode)
+
 
     mesh_lv1_default_lat = _functools.partial(
         mesh_cord,
@@ -597,6 +700,54 @@ def to_meshpoint(meshcode, lat_multiplier, lon_multiplier):
         func_unit_cord=_unit_lon_lv6,
         func_multiplier=lon_multiplier_lv6)
 
+    mesh_lv7_default_lat = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv6_default_lat,
+        func_unit_cord=_unit_lat_lv7,
+        func_multiplier=lat_multiplier_lv7)
+
+    mesh_lv7_default_lon = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv6_default_lon,
+        func_unit_cord=_unit_lon_lv7,
+        func_multiplier=lon_multiplier_lv7)
+
+    mesh_lv8_default_lat = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv7_default_lat,
+        func_unit_cord=_unit_lat_lv8,
+        func_multiplier=lat_multiplier_lv8)
+
+    mesh_lv8_default_lon = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv7_default_lon,
+        func_unit_cord=_unit_lon_lv8,
+        func_multiplier=lon_multiplier_lv8)
+
+    mesh_lv9_default_lat = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv8_default_lat,
+        func_unit_cord=_unit_lat_lv9,
+        func_multiplier=lat_multiplier_lv9)
+
+    mesh_lv9_default_lon = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv8_default_lon,
+        func_unit_cord=_unit_lon_lv9,
+        func_multiplier=lon_multiplier_lv9)
+
+    mesh_lv10_default_lat = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv9_default_lat,
+        func_unit_cord=_unit_lat_lv10,
+        func_multiplier=lat_multiplier_lv10)
+
+    mesh_lv10_default_lon = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv9_default_lon,
+        func_unit_cord=_unit_lon_lv10,
+        func_multiplier=lon_multiplier_lv10)
+
     mesh_lv1_lat = _functools.partial(
         mesh_cord,
         func_higher_cord=mesh_lv1_default_lat,
@@ -765,6 +916,54 @@ def to_meshpoint(meshcode, lat_multiplier, lon_multiplier):
         func_unit_cord=_unit_lon_lv6,
         func_multiplier=lon_multiplier_lv)
 
+    mesh_lv7_lat = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv7_default_lat,
+        func_unit_cord=_unit_lat_lv7,
+        func_multiplier=lat_multiplier_lv)
+
+    mesh_lv7_lon = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv7_default_lon,
+        func_unit_cord=_unit_lon_lv7,
+        func_multiplier=lon_multiplier_lv)
+
+    mesh_lv8_lat = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv8_default_lat,
+        func_unit_cord=_unit_lat_lv8,
+        func_multiplier=lat_multiplier_lv)
+
+    mesh_lv8_lon = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv8_default_lon,
+        func_unit_cord=_unit_lon_lv8,
+        func_multiplier=lon_multiplier_lv)
+
+    mesh_lv9_lat = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv9_default_lat,
+        func_unit_cord=_unit_lat_lv9,
+        func_multiplier=lat_multiplier_lv)
+
+    mesh_lv9_lon = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv9_default_lon,
+        func_unit_cord=_unit_lon_lv9,
+        func_multiplier=lon_multiplier_lv)
+
+    mesh_lv10_lat = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv10_default_lat,
+        func_unit_cord=_unit_lat_lv10,
+        func_multiplier=lat_multiplier_lv)
+
+    mesh_lv10_lon = _functools.partial(
+        mesh_cord,
+        func_higher_cord=mesh_lv10_default_lon,
+        func_unit_cord=_unit_lon_lv10,
+        func_multiplier=lon_multiplier_lv)
+
     level = to_meshlevel(meshcode)
 
     if level == 1:
@@ -809,6 +1008,18 @@ def to_meshpoint(meshcode, lat_multiplier, lon_multiplier):
     if level == 6:
         return mesh_lv6_lat(), mesh_lv6_lon()
 
+    if level == 7:
+        return mesh_lv7_lat(), mesh_lv7_lon()
+
+    if level == 8:
+        return mesh_lv8_lat(), mesh_lv8_lon()
+
+    if level == 9:
+        return mesh_lv9_lat(), mesh_lv9_lon()
+
+    if level == 10:
+        return mesh_lv10_lat(), mesh_lv10_lon()
+
     raise ValueError("the level is unsupported.")
 
 def _make_envelope(lat_s, lon_w, lat_n, lon_e, to_level, astype):
@@ -850,3 +1061,6 @@ def to_intersects(meshcode, to_level):
     from_lat_n, from_lon_e = to_meshpoint(meshcode, 1, 1)
 
     return _make_envelope(from_lat_s, from_lon_w, from_lat_n, from_lon_e, to_level, type(meshcode))
+
+def is_nonstandard(level):
+    return level in _nonstandard_levels
