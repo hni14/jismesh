@@ -44,8 +44,16 @@ _unit_lat_lv5 = _functools.lru_cache(1)(lambda: _unit_lat_lv4()/2)
 _unit_lon_lv5 = _functools.lru_cache(1)(lambda: _unit_lon_lv4()/2)
 _unit_lat_lv6 = _functools.lru_cache(1)(lambda: _unit_lat_lv5()/2)
 _unit_lon_lv6 = _functools.lru_cache(1)(lambda: _unit_lon_lv5()/2)
+_unit_lat_lv7 = _functools.lru_cache(1)(lambda: _unit_lat_lv6()/2)
+_unit_lon_lv7 = _functools.lru_cache(1)(lambda: _unit_lon_lv6()/2)
+_unit_lat_lv8 = _functools.lru_cache(1)(lambda: _unit_lat_lv7()/2)
+_unit_lon_lv8 = _functools.lru_cache(1)(lambda: _unit_lon_lv7()/2)
+_unit_lat_lv9 = _functools.lru_cache(1)(lambda: _unit_lat_lv8()/2)
+_unit_lon_lv9 = _functools.lru_cache(1)(lambda: _unit_lon_lv8()/2)
+_unit_lat_lv10 = _functools.lru_cache(1)(lambda: _unit_lat_lv9()/2)
+_unit_lon_lv10 = _functools.lru_cache(1)(lambda: _unit_lon_lv9()/2)
 
-_supported_levels = [1, 40000, 20000, 16000, 2, 8000, 5000, 4000, 2500, 2000, 3, 4, 5, 6]
+_supported_levels = [1, 40000, 20000, 16000, 2, 8000, 5000, 4000, 2500, 2000, 3, 4, 5, 6, 7, 8, 9, 10]
 
 def unit_lat(level):
     level = _np.atleast_1d(level).astype(_np.int64)
@@ -68,6 +76,10 @@ def unit_lat(level):
     lat[level==4] = _unit_lat_lv4()
     lat[level==5] = _unit_lat_lv5()
     lat[level==6] = _unit_lat_lv6()
+    lat[level==7] = _unit_lat_lv7()
+    lat[level==8] = _unit_lat_lv8()
+    lat[level==9] = _unit_lat_lv9()
+    lat[level==10] = _unit_lat_lv10()
 
     if lat.size == 1:
         lat =  _np.asscalar(lat)
@@ -95,6 +107,10 @@ def unit_lon(level):
     lon[level==4] = _unit_lon_lv4()
     lon[level==5] = _unit_lon_lv5()
     lon[level==6] = _unit_lon_lv6()
+    lon[level==7] = _unit_lon_lv7()
+    lon[level==8] = _unit_lon_lv8()
+    lon[level==9] = _unit_lon_lv9()
+    lon[level==10] = _unit_lon_lv10()
 
     if lon.size == 1:
         lon =  _np.asscalar(lon)
@@ -122,6 +138,10 @@ def to_meshcode(lat, lon, level, astype):
                 4次(500m四方):4
                 5次(250m四方):5
                 6次(125m四方):6
+                7次(62.5m四方):7
+                8次(31.25m四方):8
+                9次(15.625m四方):9
+                10次(7.8125四方):10
         astype: 戻り値メッシュコードの型
     Return:
         指定次の地域メッシュコード
@@ -158,6 +178,14 @@ def to_meshcode(lat, lon, level, astype):
     rem_lon_lv5 = lambda lon: rem_lon_lv4(lon) % _unit_lon_lv5()
     rem_lat_lv6 = lambda lat: rem_lat_lv5(lat) % _unit_lat_lv6()
     rem_lon_lv6 = lambda lon: rem_lon_lv5(lon) % _unit_lon_lv6()
+    rem_lat_lv7 = lambda lat: rem_lat_lv6(lat) % _unit_lat_lv7()
+    rem_lon_lv7 = lambda lon: rem_lon_lv6(lon) % _unit_lon_lv7()
+    rem_lat_lv8 = lambda lat: rem_lat_lv7(lat) % _unit_lat_lv8()
+    rem_lon_lv8 = lambda lon: rem_lon_lv7(lon) % _unit_lon_lv8()
+    rem_lat_lv9 = lambda lat: rem_lat_lv8(lat) % _unit_lat_lv9()
+    rem_lon_lv9 = lambda lon: rem_lon_lv8(lon) % _unit_lon_lv9()
+    rem_lat_lv10 = lambda lat: rem_lat_lv9(lat) % _unit_lat_lv10()
+    rem_lon_lv10 = lambda lon: rem_lon_lv9(lon) % _unit_lon_lv10()
 
     def meshcode_lv1(lat, lon):
         ab = (rem_lat_lv0(lat) // _unit_lat_lv1())
@@ -227,6 +255,22 @@ def to_meshcode(lat, lon, level, astype):
         k = (rem_lat_lv5(lat) // _unit_lat_lv6())*2 + (rem_lon_lv5(lon) // _unit_lon_lv6()) + 1
         return meshcode_lv5(lat, lon)*10 + k
 
+    def meshcode_lv7(lat, lon):
+        l = (rem_lat_lv6(lat) // _unit_lat_lv7())*2 + (rem_lon_lv6(lon) // _unit_lon_lv7()) + 1
+        return meshcode_lv6(lat, lon)*10 + l
+
+    def meshcode_lv8(lat, lon):
+        m = (rem_lat_lv7(lat) // _unit_lat_lv8())*2 + (rem_lon_lv7(lon) // _unit_lon_lv8()) + 1
+        return meshcode_lv7(lat, lon)*10 + m
+
+    def meshcode_lv9(lat, lon):
+        n = (rem_lat_lv8(lat) // _unit_lat_lv9())*2 + (rem_lon_lv8(lon) // _unit_lon_lv9()) + 1
+        return meshcode_lv8(lat, lon)*10 + n
+
+    def meshcode_lv10(lat, lon):
+        o = (rem_lat_lv9(lat) // _unit_lat_lv10())*2 + (rem_lon_lv9(lon) // _unit_lon_lv10()) + 1
+        return meshcode_lv9(lat, lon)*10 + o
+
     lat = _np.atleast_1d(lat).astype(_np.float64)
     lon = _np.atleast_1d(lon).astype(_np.float64)
     level = _np.atleast_1d(level).astype(_np.int64)
@@ -284,6 +328,18 @@ def to_meshcode(lat, lon, level, astype):
 
     if _np.any(_np.isin(level, 6)):
         meshcode += meshcode_lv6(lat, lon) * (level == 6)
+
+    if _np.any(_np.isin(level, 7)):
+        meshcode += meshcode_lv7(lat, lon) * (level == 7)
+
+    if _np.any(_np.isin(level, 8)):
+        meshcode += meshcode_lv8(lat, lon) * (level == 8)
+
+    if _np.any(_np.isin(level, 9)):
+        meshcode += meshcode_lv9(lat, lon) * (level == 9)
+
+    if _np.any(_np.isin(level, 10)):
+        meshcode += meshcode_lv10(lat, lon) * (level == 10)
     
     meshcode = meshcode.astype(_np.int64)
     meshcode = meshcode.astype(astype)
@@ -314,6 +370,10 @@ def to_meshlevel(meshcode):
                 4次(500m四方):4
                 5次(250m四方):5
                 6次(125m四方):6
+                7次(62.5m四方):7
+                8次(31.25m四方):8
+                9次(15.625m四方):9
+                10次(7.8125四方):10
     """
     meshcode = _np.array(meshcode).astype(_np.int64)
     level = _np.full(meshcode.shape, _np.int64(-1))
@@ -328,6 +388,10 @@ def to_meshlevel(meshcode):
     i = _slice(meshcode, 8, 9)
     j = _slice(meshcode, 9, 10)
     k = _slice(meshcode, 10, 11)
+    l = _slice(meshcode, 11, 12)
+    m = _slice(meshcode, 12, 13)
+    n = _slice(meshcode, 13, 14)
+    o = _slice(meshcode, 14, 15)
 
     level[(num_digits==4)] = 1
     level[(num_digits==5)] = 40000
@@ -343,6 +407,10 @@ def to_meshlevel(meshcode):
     level[(num_digits==9) & (i == 7)] = 4000
     level[(num_digits==10) & (_np.isin(j, [1,2,3,4]))] = 5
     level[(num_digits==11) & (_np.isin(k, [1,2,3,4]))] = 6
+    level[(num_digits==12) & (_np.isin(k, [1,2,3,4]))] = 7
+    level[(num_digits==13) & (_np.isin(k, [1,2,3,4]))] = 8
+    level[(num_digits==14) & (_np.isin(k, [1,2,3,4]))] = 9
+    level[(num_digits==15) & (_np.isin(k, [1,2,3,4]))] = 10
 
     if level.size == 1:
         level =  _np.asscalar(level)
@@ -366,6 +434,10 @@ def to_meshpoint(meshcode, lat_multiplier, lon_multiplier):
                 4次(500m四方):4
                 5次(250m四方):5
                 6次(125m四方):6
+                7次(62.5m四方):7
+                8次(31.25m四方):8
+                9次(15.625m四方):9
+                10次(7.8125四方):10
 
     Args:
         meshcode: 指定次の地域メッシュコード
@@ -387,6 +459,10 @@ def to_meshpoint(meshcode, lat_multiplier, lon_multiplier):
     i = _slice(meshcode, 8, 9)
     j = _slice(meshcode, 9, 10)
     k = _slice(meshcode, 10, 11)
+    l = _slice(meshcode, 11, 12)
+    m = _slice(meshcode, 12, 13)
+    n = _slice(meshcode, 13, 14)
+    o = _slice(meshcode, 14, 15)
 
     level = to_meshlevel(meshcode)
 
@@ -404,10 +480,14 @@ def to_meshpoint(meshcode, lat_multiplier, lon_multiplier):
     target_lv4 = level == 4
     target_lv5 = level == 5
     target_lv6 = level == 6
+    target_lv7 = level == 7
+    target_lv8 = level == 8
+    target_lv9 = level == 9
+    target_lv10 = level == 10
 
     # level 1
     # ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':1},        '5339'),
-    targets = target_lv1 | target_40000 | target_20000 | target_16000 | target_8000 | target_4000 | target_lv2 | target_5000 | target_2500 | target_2000 | target_lv3 | target_lv4 | target_lv5 | target_lv6
+    targets = target_lv1 | target_40000 | target_20000 | target_16000 | target_8000 | target_4000 | target_lv2 | target_5000 | target_2500 | target_2000 | target_lv3 | target_lv4 | target_lv5 | target_lv6 | target_lv7 | target_lv8 | target_lv9| target_lv10
     lat = (ab * _unit_lat_lv1()) * targets
     lon = (cd * _unit_lon_lv1() + 100) * targets
 
@@ -443,7 +523,7 @@ def to_meshpoint(meshcode, lat_multiplier, lon_multiplier):
 
     # level 2
     #  ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':2},        '533935'),
-    targets = target_lv2 | target_5000 | target_2500 | target_2000 | target_lv3 | target_lv4 | target_lv5 | target_lv6
+    targets = target_lv2 | target_5000 | target_2500 | target_2000 | target_lv3 | target_lv4 | target_lv5 | target_lv6 | target_lv7 | target_lv8 | target_lv9 | target_lv10
     lat += (e * _unit_lat_lv2()) * targets
     lon += (f * _unit_lon_lv2()) * targets
 
@@ -467,29 +547,53 @@ def to_meshpoint(meshcode, lat_multiplier, lon_multiplier):
 
     # level 3
     # ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':3},        '53393599'),
-    targets = target_lv3 | target_lv4 | target_lv5 | target_lv6
+    targets = target_lv3 | target_lv4 | target_lv5 | target_lv6 | target_lv7 | target_lv8 | target_lv9 | target_lv10
     lat += (g * _unit_lat_lv3()) * targets
     lon += (h * _unit_lon_lv3()) * targets
 
     # level 4
     # ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':4},        '533935992'),
-    targets = target_lv4 | target_lv5 | target_lv6
+    targets = target_lv4 | target_lv5 | target_lv6 | target_lv7 | target_lv8 | target_lv9 | target_lv10
     lat += ((i//3 == 1) * _unit_lat_lv4()) * targets
     lon += ((i%2 == 0) * _unit_lon_lv4()) * targets
 
     # level 5
     # ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':5},        '5339359921'),
-    targets = target_lv5 | target_lv6
+    targets = target_lv5 | target_lv6 | target_lv7 | target_lv8 | target_lv9 | target_lv10
     lat += ((j//3 == 1) * _unit_lat_lv5()) * targets
     lon += ((j%2 == 0) * _unit_lon_lv5()) * targets
 
     # level 6
     # ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':6},        '53393599212'),
-    targets = target_lv6
+    targets = target_lv6 | target_lv7 | target_lv8 | target_lv9 | target_lv10
     lat += ((k//3 == 1) * _unit_lat_lv6()) * targets
     lon += ((k%2 == 0) * _unit_lon_lv6()) * targets
 
-    # メッシュ内座業
+    # level 7
+    # ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':7},        '533935992121'),
+    targets = target_lv7 | target_lv8 | target_lv9 | target_lv10
+    lat += ((k//3 == 1) * _unit_lat_lv7()) * targets
+    lon += ((k%2 == 0) * _unit_lon_lv7()) * targets
+
+    # level 8
+    # ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':8},        '5339359921211'),
+    targets = target_lv8 | target_lv9 | target_lv10
+    lat += ((k//3 == 1) * _unit_lat_lv8()) * targets
+    lon += ((k%2 == 0) * _unit_lon_lv8()) * targets
+
+    # level 9
+    # ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':9},        '53393599212113'),
+    targets = target_lv9 | target_lv10
+    lat += ((k//3 == 1) * _unit_lat_lv9()) * targets
+    lon += ((k%2 == 0) * _unit_lon_lv9()) * targets
+
+    # level 10
+    # ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':10},        '533935992121134'),
+    targets = target_lv10
+    lat += ((k//3 == 1) * _unit_lat_lv10()) * targets
+    lon += ((k%2 == 0) * _unit_lon_lv10()) * targets
+
+    # メッシュ内産業
     lat +=  unit_lat(level)*lat_multiplier
     lon +=  unit_lon(level)*lon_multiplier
 
