@@ -29,6 +29,10 @@ def _data_scalar():
         ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':4},        '533935992'),
         ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':5},        '5339359921'),
         ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':6},        '53393599212'),
+        ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':7},        '533935992121'),
+        ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':8},        '5339359921211'),
+        ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':9},        '53393599212113'),
+        ({'lat':_lat_tokyo_tower, 'lon':_lon_tokyo_tower, 'level':10},       '533935992121134'),
         ({'lat':_lat_kyoto_tower, 'lon':_lon_kyoto_tower, 'level':1},        '5235'),
         ({'lat':_lat_kyoto_tower, 'lon':_lon_kyoto_tower, 'level':40000},    '52352'),
         ({'lat':_lat_kyoto_tower, 'lon':_lon_kyoto_tower, 'level':20000},    '5235245'),
@@ -43,6 +47,10 @@ def _data_scalar():
         ({'lat':_lat_kyoto_tower, 'lon':_lon_kyoto_tower, 'level':4},        '523536804'),
         ({'lat':_lat_kyoto_tower, 'lon':_lon_kyoto_tower, 'level':5},        '5235368041'),
         ({'lat':_lat_kyoto_tower, 'lon':_lon_kyoto_tower, 'level':6},        '52353680412'),
+        ({'lat':_lat_kyoto_tower, 'lon':_lon_kyoto_tower, 'level':7},        '523536804122'),
+        ({'lat':_lat_kyoto_tower, 'lon':_lon_kyoto_tower, 'level':8},        '5235368041222'),
+        ({'lat':_lat_kyoto_tower, 'lon':_lon_kyoto_tower, 'level':9},        '52353680412222'),
+        ({'lat':_lat_kyoto_tower, 'lon':_lon_kyoto_tower, 'level':10},       '523536804122224'),
     ]
 
 def _data_vector(num_elements=10):
