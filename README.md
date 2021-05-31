@@ -1,6 +1,6 @@
 # jismesh
 
-地域メッシュコードに関するユーティリティです。
+地域メッシュコード [JISX0410:2002](https://www.jisc.go.jp/app/jis/general/GnrJISNumberNameSearchList?show&jisStdNo=X0410) に関するユーティリティです。
 
 ## 対応地域メッシュコード
 - 1次(標準地域メッシュ 80km四方): 1
@@ -17,7 +17,16 @@
 - 4次(分割地域メッシュ 500m四方): 4
 - 5次(分割地域メッシュ 250m四方): 5
 - 6次(分割地域メッシュ 125m四方): 6
+- 7次(62.5m四方)*: 7
+- 8次(31.25m四方)*: 8
+- 9次(15.625m四方)*: 9
+- 10次(7.8125m四方)*: 10
 
+
+\* 7次以降は [JISX0410:2002](https://www.jisc.go.jp/app/jis/general/GnrJISNumberNameSearchList?show&jisStdNo=X0410) の規定外ですが、実務上のニーズに応えるため本ユーティリティでは取り扱い可能としています。
+それらの次数を使用した場合は、`JismeshNonstandardWarning`の警告が表示されます。
+
+  
 ## インストール
 ```bash
 pip install jismesh
